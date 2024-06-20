@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { PrismaClient } from '@prisma/client'
+
 import { PrismaService } from 'src/prisma/prisma.service';
-const prisma = new PrismaClient()
+
 
 @Injectable()
 export class CartService {
@@ -12,21 +12,38 @@ export class CartService {
 
     async add_to_cart(userId: number, productId:number, quantity:number) {
 
-        const user = await prisma.user.findFirst({
+        const user = await this.prisma.user.findFirst({
           where: {userId: userId},
           include: {
             cart: true
           }
         });
-      
-        const cart = await prisma.cart.findFirst({
+        console.log(user);
+
+        
+        if(!user.cart){
+          // Create a new Cart
+          await this.prisma.user.update({
+            where: {
+              userId: userId
+            },
+            data: {
+              cart: {
+                create: {
+                  
+                }
+              }
+            }
+          })
+        }
+        const cart = await this.prisma.cart.findFirst({
           where: {userId: user.userId},
           include: {
             ProductCart: true
           }
         })
       
-        const product = await prisma.product.findFirst({
+        const product = await this.prisma.product.findFirst({
           where: {
             productId: productId
           }
@@ -37,7 +54,7 @@ export class CartService {
           return 0;
         }
       
-        await prisma.productCart.create({
+        await this.prisma.productCart.create({
           data: {
             cartId: cart.cartId,
             quantity: quantity,
@@ -50,21 +67,21 @@ export class CartService {
       
       
        async update_cart(userId:number, productId:number, quantity:number){
-        const user = await prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
           where: {userId: userId},
           include: {
             cart: true
           }
         });
       
-        const cart = await prisma.cart.findUnique({
+        const cart = await this.prisma.cart.findUnique({
           where: {userId: user.userId},
           include: {
             ProductCart: true
           }
         })
       
-        const product = await prisma.product.findUnique({
+        const product = await this.prisma.product.findUnique({
           where: {
             productId: productId
           }
@@ -86,7 +103,7 @@ export class CartService {
         }
         
         // Update Cart Quantity
-        await prisma.productCart.update({
+        await this.prisma.productCart.update({
       
           where: 
             {
@@ -104,7 +121,7 @@ export class CartService {
       
       
         // Update Product Stock
-        await prisma.product.update({
+        await this.prisma.product.update({
           where:{
             productId: productId
           },
@@ -116,14 +133,14 @@ export class CartService {
        }
       
        async get_cart(userId:number){
-        const user = await prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
           where: {userId: userId},
           include: {
             cart: true
           }
         });
       
-        const cart = await prisma.cart.findUnique({
+        const cart = await this.prisma.cart.findUnique({
           where: {userId: user.userId},
           include: {
             ProductCart: true
@@ -133,7 +150,7 @@ export class CartService {
         var message:String = "";
       
         for(const element of cart.ProductCart){
-          const product = await prisma.product.findUnique({
+          const product = await this.prisma.product.findUnique({
             where: {
               productId: element.productId
             }
@@ -155,21 +172,21 @@ export class CartService {
       }
       
       async delete_from_cart(userId:number, productId:number){
-        const user = await prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
           where: {userId: userId},
           include: {
             cart: true
           }
         });
       
-        const cart = await prisma.cart.findUnique({
+        const cart = await this.prisma.cart.findUnique({
           where: {userId: user.userId},
           include: {
             ProductCart: true
           }
         })
       
-        await prisma.productCart.delete({
+        await this.prisma.productCart.delete({
           where: {
             productId_cartId: {
               cartId: cart.cartId,

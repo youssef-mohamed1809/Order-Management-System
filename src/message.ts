@@ -1,0 +1,1 @@
+export var message = "This is an Order Management Systems API created using NestJS, Prisma, and PostgreSQL. It includes a variety of features such as: adding and removing products to/from the cart, creating an order, viewing order history, and much more.";

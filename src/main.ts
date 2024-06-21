@@ -13,8 +13,8 @@ async function bootstrap() {
   .setVersion('1.0')
   .addTag('nestjs')
   .build();
-const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('doc', app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('doc', app, document);
 
   await app.listen(3000);
 }

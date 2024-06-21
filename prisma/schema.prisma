@@ -38,6 +38,8 @@ model Cart {
   user   User @relation(fields: [userId], references: [userId])
   userId Int  @unique
 
+  total_price Int?
+
   ProductCart ProductCart[]
 }
 
@@ -48,6 +50,8 @@ model Order {
 
   User   User? @relation(fields: [userId], references: [userId])
   userId Int?
+
+  total_price Int?
 
   productOrder ProductOrder[]
 }

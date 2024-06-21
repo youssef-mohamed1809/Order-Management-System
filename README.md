@@ -1,3 +1,6 @@
+# Order Management System
+
+This is a backend of an Order Management System. It was implemented using NestJS and Prisma, and the database used was PostgreSQL. The API documentation was done using Swagger.
 
 ## Installation
 
